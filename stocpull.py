@@ -1,39 +1,18 @@
-import yfinance as yf
 
-import tkinter as tk 
-from tkinter import ttk
+import requests
+from bs4 import BeautifulSoup
+urlm = " https://www.getmidas.com/canli-borsa/"
+    
+r = requests.get(urlm)
+g = r.content
+ff = BeautifulSoup(g, "html.parser")
+""" hisse fiyatları """
 
+ss = ff.find_all("td", class_="val")
+ 
 
-ff=tk.Tk()
-ff.geometry=("600x800")
-
+""" hisse ismi çekme """
+gzz=ff.find_all("a",class_="title stock-code" )
    
-while True:
-    hh=input("hisse yazı")
-    if hh.lower()=="bitti":
-        print("bitti")
-        break
-
-    else:
-        print("girdiler")
-        
-        try:
-           
-        
-           aaple=yf.Ticker(hh)
-           
-           hisse=aaple.history(period="1d")
-           if not hisse.empty:
-              
-              price=hisse['Close'].iloc[-1]
-              print(f"{hh} tekrar deneyin: {price:.2f} USD " )
-           else:
-              
-                 print("yeniden deneyin")   
-        
-        
-        except Exception as e:
-            print(f"hisse: {str (e)}")
-        
-
-ff.mainloop()
+for ısım,fıyat in zip(gzz, ss):
+    print(f"{ısım.text.strip()}={fıyat.text.strip()} ")
